@@ -31,12 +31,9 @@ def register_flaskview(app, classy_view):
     """
     if isinstance(app, Blueprint):
         endpoint_prefix = app.name + '.'
-        before_first_request = app.before_app_first_request
     else:
         endpoint_prefix = ''
-        before_first_request = app.before_first_request
 
-    @before_first_request
     def _register_menu_items():
         for meth_str in dir(classy_view):
             meth = getattr(classy_view, meth_str)
@@ -54,6 +51,7 @@ def register_flaskview(app, classy_view):
                         endpoint,
                         **menu_item
                     )
+    _register_menu_items()
 
 
 def classy_menu_item(path, text, **kwargs):

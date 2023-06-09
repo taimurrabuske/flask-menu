@@ -358,15 +358,12 @@ def register_menu(app, path, text, order=0,
         """Decorator of a view function that should be included in the menu."""
         if isinstance(app, Blueprint):
             endpoint = app.name + '.' + f.__name__
-            before_first_request = app.before_app_first_request
         else:
             endpoint = f.__name__
-            before_first_request = app.before_first_request
 
         expected = inspect.getfullargspec(f).args if PY3 else \
             inspect.getargspec(f).args
 
-        @before_first_request
         def _register_menu_item():
             # str(path) allows path to be a string-convertible object
             # that may be useful for delayed evaluation of path
@@ -381,6 +378,7 @@ def register_menu(app, path, text, order=0,
                 visible_when=visible_when,
                 expected_args=expected,
                 **kwargs)
+        _register_menu_item()
         return f
 
     return menu_decorator
